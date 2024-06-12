@@ -1,0 +1,142 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/schemas/sarif-schema-2.1.0.json",
+  "runs": [
+    {
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": [
+            {
+              "descriptor": {
+                "id": "Syntax error"
+              },
+              "level": "warning",
+              "message": {
+                "text": "Syntax error at line hardcoded-key-in-use.java:11:\n `(String secretKey)` was unexpected"
+              }
+            }
+          ]
+        }
+      ],
+      "results": [
+        {
+          "fingerprints": {
+            "matchBasedId/v1": "4a72b06f215879b46e53c8577bd5ba2879719a91f3f97e9ba679d5d5f3354f3bc079991f40712582a966c5b277d4cd1bf5d8087742cd2be24e9164f00bbcd9af_0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "hardcoded-key-in-use.java",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "endColumn": 92,
+                  "endLine": 7,
+                  "snippet": {
+                    "text": "        SecretKeySpec secretKeySpec = new SecretKeySpec(\"my secret here\".getBytes(), \"AES\");"
+                  },
+                  "startColumn": 39,
+                  "startLine": 7
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Cryptographic implementations with insufficient key length are being used.."
+          },
+          "properties": {},
+          "ruleId": "rules.hardcoded-crypto-key-test"
+        },
+        {
+          "fingerprints": {
+            "matchBasedId/v1": "f8eb34887634c6c076d0c71a052ea00de164db6b91d85a7c3cf018f8445a5b07aa5b8937bc8790e687f4ab578268d6a7d1d802e28bfece2f9a61bb188e29d012_0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "hardcoded-key-in-use.java",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "endColumn": 60,
+                  "endLine": 14,
+                  "snippet": {
+                    "text": "    byte[] keyBytes = encryptionKey.getBytes();\n    SecretKeySpec key = new SecretKeySpec(keyBytes, \"AES\");"
+                  },
+                  "startColumn": 5,
+                  "startLine": 13
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Cryptographic implementations with insufficient key length are being used.."
+          },
+          "properties": {},
+          "ruleId": "rules.hardcoded-crypto-key-test"
+        },
+        {
+          "fingerprints": {
+            "matchBasedId/v1": "eaa7d668fe01950d900a059e49bed0adff23b02341bf9e3b176d6780bd0a08804085df3e90c2e343dc2f8fdabc772624d90add07eeb162b30d0da9e4aca4cf74_0"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "hardcoded-key-in-use.java",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "endColumn": 65,
+                  "endLine": 19,
+                  "snippet": {
+                    "text": "  SecretKey key = new SecretKeySpec(secretKey.getBytes(), \"AES\");"
+                  },
+                  "startColumn": 19,
+                  "startLine": 19
+                }
+              }
+            }
+          ],
+          "message": {
+            "text": "Cryptographic implementations with insufficient key length are being used.."
+          },
+          "properties": {},
+          "ruleId": "rules.hardcoded-crypto-key-test"
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "Semgrep OSS",
+          "rules": [
+            {
+              "defaultConfiguration": {
+                "level": "warning"
+              },
+              "fullDescription": {
+                "text": "Cryptographic implementations with insufficient key length are being used.."
+              },
+              "help": {
+                "markdown": "Cryptographic implementations with insufficient key length are being used..",
+                "text": "Cryptographic implementations with insufficient key length are being used.."
+              },
+              "id": "rules.hardcoded-crypto-key-test",
+              "name": "rules.hardcoded-crypto-key-test",
+              "properties": {
+                "precision": "very-high",
+                "tags": []
+              },
+              "shortDescription": {
+                "text": "Semgrep Finding: rules.hardcoded-crypto-key-test"
+              }
+            }
+          ],
+          "semanticVersion": "1.72.0"
+        }
+      }
+    }
+  ],
+  "version": "2.1.0"
+}

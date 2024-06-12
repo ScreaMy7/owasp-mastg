@@ -1,0 +1,2 @@
+ NO_COLOR=true semgrep -c ../rules/mastg-hardcoded-crypto-keys-usage.yml ./hardcoded-key-in-use.java --text -o output.txt  
+  NO_COLOR=true semgrep -c ../rules/mastg-hardcoded-crypto-keys-usage.yml ./hardcoded-key-in-use.java --sarif -o output.sarif
