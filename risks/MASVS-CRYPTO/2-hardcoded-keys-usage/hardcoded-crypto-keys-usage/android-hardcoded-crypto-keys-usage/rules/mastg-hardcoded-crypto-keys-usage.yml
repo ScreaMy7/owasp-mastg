@@ -1,13 +1,12 @@
 rules:
   - id: hardcoded-crypto-key-test
-    patterns:
-      - pattern-either:
-          - pattern: |
-              new SecretKeySpec($KEY.getBytes(), $ALGO)
-          - pattern-inside: |
-                byte[] $KEY = "...".getBytes();
-                ...
-                new SecretKeySpec($KEY, $ALGO);
+    pattern-either:
+      - pattern: |
+          new SecretKeySpec($KEY.getBytes(), $ALGO)
+      - pattern: |
+            byte[] $KEY = "...".getBytes();
+            ...
+            new SecretKeySpec($KEY, $ALGO);
     message: >-
       Hardcoded cryptographic keys are found in use.
     languages:

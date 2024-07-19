@@ -1,6 +1,8 @@
 public class Foo {
     void good() {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(Properties.getKey(), "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        SecretKey secretKey = new SecretKeySpec(keyBytes, "AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey);
     }
 
     void bad() {
@@ -19,3 +21,4 @@ public void setSecretKey(String secretKey) {
   SecretKey key = new SecretKeySpec(secretKey.getBytes(), "AES");
 
 }
+
