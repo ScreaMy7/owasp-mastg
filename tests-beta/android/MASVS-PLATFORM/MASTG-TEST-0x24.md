@@ -1,22 +1,25 @@
 ---
 platform: android
-title: Testing for App Permissions
+title: Dangerous App Permissions
 id: MASTG-TEST-0x24
-weakness: MASWE-0116
+weakness: MASWE-0117
 ---
 
 ## Overview
 
-Testing for app permissions in Android involves evaluating how an application requests, uses, and manages permissions to ensure they do not lead to security vulnerabilities. Proper permission management should protect sensitive user data and ensure that the application complies with Android's security model. The test aims to detect misconfigurations and unnecessary permissions.
+Android applications request various permissions to access system resources and user data. Some of these permissions are categorized as dangerous permissions because they grant access to sensitive information or critical device functions, such as location, SMS, contacts, and microphone. Testing these permissions is essential to identify potential security risks, ensure compliance with best practices, and prevent unauthorized access.
 
 ## Steps
 
 There are multiple tools that can help in finding permissions in use by an application. Refer @MASTG-TECH-0118 to and use any of the mentioned tools.
 
+1.  Run a static analysis tool such as `@MASTG-TOOL-0110` on the AndroidManifest.xml file. Alternatively, you can refer to `@MASTG-TECH-0118` to get a list of permissions used by the applications and then identify any dangerous permissions.
+
 ## Observation
 
-The output shows the list of permissions used by the application.
+The output shows the list of dangerous permissions used by the application.
 
 ## Evaluation
 
-  Please refer to this [permissions overview](https://developer.android.com/guide/topics/permissions/overview) for descriptions of the listed permissions that are considered dangerous.
+   The test fails if there are any dangerous permissions in the app. To obtain a list of [dangerous permissions](https://android.googlesource.com/platform/frameworks/base/%2B/master/core/res/AndroidManifest.xml#886) in `AndroidManifest.xml`, examine the permission attribute `android:protectionLevel="dangerous"`.
+

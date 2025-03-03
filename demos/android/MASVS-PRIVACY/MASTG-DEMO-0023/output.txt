@@ -1,0 +1,17 @@
+                   
+                   
+┌─────────────────┐
+│ 4 Code Findings │
+└─────────────────┘
+                       
+    AndroidManifest.xml
+    ❯❱ detect-dangerous-android-permissions
+          Dangerous Android permission found:
+                                             
+           10┆ <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            ⋮┆----------------------------------------
+           11┆ <uses-permission android:name="android.permission.READ_CONTACTS" />
+            ⋮┆----------------------------------------
+           12┆ <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            ⋮┆----------------------------------------
+           13┆ <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

@@ -1,19 +1,19 @@
 ---
 platform: android
-title: Application using unsafe permissions.
+title: Application using dangerous permissions.
 id: MASTG-DEMO-0023
-code: [java]
+code: [kotlin]
 ---
 
 ### Sample
 
-{{ AndroidManifest.xml }}
+{{ AndroidManifest_reversed.xml.xml }}
 
 ### Steps
 
 Let's run our @MASTG-TOOL-0110 rule against the sample manifest file.
 
-{{ ../../../../rules/mastg-android-unsafe-app-permissions.yaml }}
+{{ ../../../../rules/mastg-android-dangerous-app-permissions.yaml }}
 
 {{ run.sh }}
 
