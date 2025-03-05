@@ -38,8 +38,9 @@ We thank CREST for their consulation regarding the OVS programme and its support
 
 The [National Institute of Standards and Technology (NIST)](https://www.nist.gov/about-nist) was founded in 1901 and is now part of the U.S. Department of Commerce. NIST is one of the nation's oldest physical science laboratories. Congress established the agency to remove a major challenge to U.S. industrial competitiveness at the time — a second-rate measurement infrastructure that lagged behind the capabilities of the United Kingdom, Germany and other economic rivals.
 
-- [NIST.SP.800-163 "Vetting the Security of Mobile Applications" Revision 1, 2019](https://csrc.nist.gov/news/2019/nist-publishes-sp-800-163-rev-1 "National Institute of Standards and Technology")
+- [NIST.SP.800-163 "Vetting the Security of Mobile Applications" Revision 1, 2019](https://csrc.nist.gov/news/2019/nist-publishes-sp-800-163-rev-1)
 - [NIST.SP.800-218 "Secure Software Development Framework (SSDF) v1.1: Recommendations for Mitigating the Risk of Software Vulnerabilities" v1.1, 2022](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-218.pdf)
+- [NIST CSWP 33 "Product Development Cybersecurity Handbook: Concepts and Considerations for IoT Product Manufacturers" Initial Public Draft, 2024](https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.33.ipd.pdf)
 
 ### BSI (Bundesamt für Sicherheit in der Informationstechnik, Germany)
 
@@ -64,6 +65,7 @@ In 2021, ioXt has [extended its security principles through the Mobile Applicati
 
 | Name | Document | Year |
 | -------------- | -------------------- | -- |
+| Government of Singapore, Cyber Security Agency (CSA) | [Safe App Standard](https://www.csa.gov.sg/docs/default-source/publications/2024/safe-app-standard-(v1-0)a4e34e8d-2679-44d1-a836-3904922d7b6a.pdf?sfvrsn=8732135_1) | 2024 |
 | European Payments Council | [Payment Threats and Fraud Trends Report](https://www.europeanpaymentscouncil.eu/sites/default/files/kb/file/2021-12/EPC193-21%20v1.0%202021%20Payments%20Threats%20and%20Fraud%20Trends%20Report.pdf) | 2021 |
 | European Payments Council | [Mobile Initiated SEPA Credit Transfer Interoperability Implementation Guidelines, including SCT Instant (MSCT IIGs)](https://www.europeanpaymentscouncil.eu/document-library/guidance-documents/mobile-initiated-sepa-instant-credit-transfer-interoperability) | 2019 |
 | ENISA (European Union Agency for Cybersecurity) | [Good Practices for Security of SMART CARS](https://www.enisa.europa.eu/publications/smart-cars) | 2019 |

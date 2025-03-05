@@ -7,7 +7,7 @@ search:
 
 # OWASP MAS Checklist
 
-<img align="right" style="border-radius: 3px; margin-left: 5em; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;" width="550px" src="../assets/mas_checklist.png" />
+<img src="../assets/mas_checklist.png" align="right" style="border-radius: 3px; margin-left: 5em; box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;" width="550px" />
 
 The OWASP Mobile Application Security Checklist contains links to the MASTG test cases for each MASVS control.
 
@@ -18,6 +18,6 @@ The OWASP Mobile Application Security Checklist contains links to the MASTG test
 
 <br>
 
-[:material-download: Download the MAS Checklist](https://github.com/OWASP/owasp-mastg/releases/latest/download/OWASP_MAS_Checklist.xlsx){ .md-button .md-button--primary }
+<button class="mas-button" onclick="window.location.href='https://github.com/OWASP/owasp-mastg/releases/latest/download/OWASP_MAS_Checklist.xlsx';"> Download the MAS Checklist</button>
 
 <br>

@@ -9,6 +9,9 @@ title: Testing Local Storage for Sensitive Data
 masvs_v1_levels:
 - L1
 - L2
+status: deprecated
+covered_by: [MASTG-TEST-0207, MASTG-TEST-0200]
+deprecation_note: New version available in MASTG V2
 ---
 
 ## Overview
@@ -18,9 +21,9 @@ This test case focuses on identifying potentially sensitive data stored by an ap
 - Analyze data storage in the source code.
 - Be sure to trigger all possible functionality in the application (e.g. by clicking everywhere possible) in order to ensure data generation.
 - Check all application generated and modified files and ensure that the storage method is sufficiently secure.
-    - This includes SharedPreferences, SQL databases, Realm Databases, Internal Storage, External Storage, etc.
-  
-In general sensitive data stored locally on the device should always be at least encrypted, and any keys used for encryption methods should be securely stored within the Android Keystore. These files should also be stored within the application sandbox. If achievable for the application, sensitive data should be stored off device or, even better, not stored at all.
+    - This includes `SharedPreferences`, databases, Internal Storage, External Storage, etc.
+
+**NOTE:** For MASVS L1 compliance, it is sufficient to store data unencrypted in the application's internal storage directory (sandbox). For L2 compliance, additional encryption is required using cryptographic keys securely managed in the Android KeyStore. This includes using envelope encryption (DEK+KEK) or equivalent methods, or using the Android Security Library's [`EncryptedFile`](https://developer.android.com/reference/androidx/security/crypto/EncryptedFile)/[`EncryptedSharedPreferences`](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences).
 
 ## Static Analysis
 

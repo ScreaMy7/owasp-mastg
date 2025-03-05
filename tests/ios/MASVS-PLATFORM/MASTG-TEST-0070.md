@@ -40,7 +40,7 @@ Here's an example from Telegram's `.entitlements` file:
 
 More detailed information can be found in the [archived Apple Developer Documentation](https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html#//apple_ref/doc/uid/TP40016308-CH12-SW2 "Preparing Your App to Handle Universal Links").
 
-If you don't have the original source code you can still search for them, as explained in "Entitlements Embedded in the Compiled App Binary".
+If you don't have the original source code you can extract them from the MachO file as explained in @MASTG-TECH-0111.
 
 ### Retrieving the Apple App Site Association File
 
@@ -103,7 +103,7 @@ From the note above we can highlight that:
 - The mentioned `NSUserActivity` object comes from the `continueUserActivity` parameter, as seen in the method above.
 - The scheme of the `webpageURL` must be HTTP or HTTPS (any other scheme should throw an exception). The [`scheme` instance property](https://developer.apple.com/documentation/foundation/urlcomponents/1779624-scheme "URLComponents scheme") of `URLComponents` / `NSURLComponents` can be used to verify this.
 
-If you don't have the original source code you can use radare2 or rabin2 to search the binary strings for the link receiver method:
+If you don't have the original source code you can use @MASTG-TOOL-0073 or @MASTG-TOOL-0129 to search the binary strings for the link receiver method:
 
 ```bash
 $ rabin2 -zq Telegram\ X.app/Telegram\ X | grep restorationHan
@@ -203,7 +203,7 @@ $ rabin2 -zq Telegram\ X.app/Telegram\ X | grep openURL
 0x1000df772 35 34 openURL:options:completionHandler:
 ```
 
-As expected, `openURL:options:completionHandler:` is among the ones found (remember that it might be also present because the app opens custom URL schemes). Next, to ensure that no sensitive information is being leaked you'll have to perform dynamic analysis and inspect the data being transmitted. Please refer to "[Identifying and Hooking the URL Handler Method](../../../tests/ios/MASVS-PLATFORM/MASTG-TEST-0075.md#identifying-and-hooking-the-url-handler-method "Identifying and Hooking the URL Handler Method")" for some examples on hooking and tracing this method.
+As expected, `openURL:options:completionHandler:` is among the ones found (remember that it might be also present because the app opens custom URL schemes). Next, to ensure that no sensitive information is being leaked you'll have to perform dynamic analysis and inspect the data being transmitted. Please refer to @MASTG-TEST-0075 for some examples on hooking and tracing this method.
 
 ## Dynamic Analysis
 
@@ -232,7 +232,7 @@ Unlike custom URL schemes, unfortunately you cannot test universal links from Sa
 
 > To do it from Safari you will have to find an existing link on a website that once clicked, it will be recognized as a Universal Link. This can be a bit time consuming.
 
-Alternatively you can also use Frida for this, see the section "[Performing URL Requests](../../../tests/ios/MASVS-PLATFORM/MASTG-TEST-0075.md#performing-url-requests)" for more details.
+Alternatively you can also use Frida for this, see @MASTG-TEST-0075 for more details.
 
 ### Identifying Valid Universal Links
 
@@ -406,3 +406,102 @@ $ xcrun swift-demangle S10TelegramUI15openExternalUrl7account7context3url05force
 Resulting in:
 
 ```default
+---> TelegramUI.openExternalUrl(
+    account: TelegramCore.Account, context: TelegramUI.OpenURLContext, url: Swift.String,
+    forceExternal: Swift.Bool, presentationData: TelegramUI.PresentationData,
+    applicationContext: TelegramUI.TelegramApplicationContext,
+    navigationController: Display.NavigationController?, dismissInput: () -> ()) -> ()
+```
+
+This not only gives you the class (or module) of the method, its name and the parameters but also reveals the parameter types and return type, so in case you need to dive deeper now you know where to start.
+
+For now we will use this information to properly print the parameters by editing the stub file:
+
+```javascript
+// __handlers__/TelegramUI/_S10TelegramUI15openExternalUrl7_b1a3234e.js
+
+  onEnter: function (log, args, state) {
+
+    log("TelegramUI.openExternalUrl(account: TelegramCore.Account,
+        context: TelegramUI.OpenURLContext, url: Swift.String, forceExternal: Swift.Bool,
+        presentationData: TelegramUI.PresentationData,
+        applicationContext: TelegramUI.TelegramApplicationContext,
+        navigationController: Display.NavigationController?, dismissInput: () -> ()) -> ()");
+    log("\taccount: " + ObjC.Object(args[0]).toString());
+    log("\tcontext: " + ObjC.Object(args[1]).toString());
+    log("\turl: " + ObjC.Object(args[2]).toString());
+    log("\tpresentationData: " + args[3]);
+    log("\tapplicationContext: " + ObjC.Object(args[4]).toString());
+    log("\tnavigationController: " + ObjC.Object(args[5]).toString());
+  },
+```
+
+This way, the next time we run it we get a much more detailed output:
+
+```bash
+298382 ms  -[AppDelegate application:0x10556b3c0 continueUserActivity:0x1c4237780
+                restorationHandler:0x16f27a898]
+298382 ms  application:<Application: 0x10556b3c0>
+298382 ms  continueUserActivity:<NSUserActivity: 0x1c4237780>
+298382 ms       webpageURL:http://t.me/addstickers/radare
+298382 ms       activityType:NSUserActivityTypeBrowsingWeb
+298382 ms       userInfo:{
+}
+298382 ms  restorationHandler:<__NSStackBlock__: 0x16f27a898>
+
+298619 ms     | TelegramUI.openExternalUrl(account: TelegramCore.Account,
+context: TelegramUI.OpenURLContext, url: Swift.String, forceExternal: Swift.Bool,
+presentationData: TelegramUI.PresentationData, applicationContext:
+TelegramUI.TelegramApplicationContext, navigationController: Display.NavigationController?,
+dismissInput: () -> ()) -> ()
+298619 ms     |     account: TelegramCore.Account
+298619 ms     |     context: nil
+298619 ms     |     url: http://t.me/addstickers/radare
+298619 ms     |     presentationData: 0x1c4e40fd1
+298619 ms     |     applicationContext: nil
+298619 ms     |     navigationController: TelegramUI.PresentationData
+
+```
+
+There you can observe the following:
+
+- It calls `application:continueUserActivity:restorationHandler:` from the app delegate as expected.
+- `application:continueUserActivity:restorationHandler:` handles the URL but does not open it, it calls `TelegramUI.openExternalUrl` for that.
+- The URL being opened is `https://t.me/addstickers/radare`.
+
+You can now keep going and try to trace and verify how the data is being validated. For example, if you have two apps that _communicate_ via universal links you can use this to see if the sending app is leaking sensitive data by hooking these methods in the receiving app. This is especially useful when you don't have the source code as you will be able to retrieve the full URL that you wouldn't see other way as it might be the result of clicking some button or triggering some functionality.
+
+In some cases, you might find data in `userInfo` of the `NSUserActivity` object. In the previous case there was no data being transferred but it might be the case for other scenarios. To see this, be sure to hook the `userInfo` property or access it directly from the `continueUserActivity` object in your hook (e.g. by adding a line like this `log("userInfo:" + ObjC.Object(args[3]).userInfo().toString());`).
+
+### Final Notes about Universal Links and Handoff
+
+Universal links and Apple's [Handoff feature](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Handoff/HandoffFundamentals/HandoffFundamentals.html#//apple_ref/doc/uid/TP40014338 "Handoff Fundamentals: About Handoff") are related:
+
+- Both rely on the same method when receiving data:
+
+```default
+application:continueUserActivity:restorationHandler:
+```
+
+- Like universal links, the Handoff's Activity Continuation must be declared in the `com.apple.developer.associated-domains` entitlement and in the server's `apple-app-site-association` file (in both cases via the keyword `"activitycontinuation":`). See "Retrieving the Apple App Site Association File" above for an example.
+
+Actually, the previous example in "Checking How the Links Are Opened" is very similar to the "Web Browser-to-Native App Handoff" scenario described in the ["Handoff Programming Guide"](https://developer.apple.com/library/archive/documentation/UserExperience/Conceptual/Handoff/AdoptingHandoff/AdoptingHandoff.html#//apple_ref/doc/uid/TP40014338-CH2-SW10 "Adopting Handoff: Web Browser-to-Native App"):
+
+> If the user is using a web browser on the originating device, and the receiving device is an iOS device with a native app that claims the domain portion of the `webpageURL` property, then iOS launches the native app and sends it an `NSUserActivity` object with an `activityType` value of `NSUserActivityTypeBrowsingWeb`. The `webpageURL` property contains the URL the user was visiting, while the `userInfo` dictionary is empty.
+
+In the detailed output above you can see that `NSUserActivity` object we've received meets exactly the mentioned points:
+
+```bash
+298382 ms  -[AppDelegate application:0x10556b3c0 continueUserActivity:0x1c4237780
+                restorationHandler:0x16f27a898]
+298382 ms  application:<Application: 0x10556b3c0>
+298382 ms  continueUserActivity:<NSUserActivity: 0x1c4237780>
+298382 ms       webpageURL:http://t.me/addstickers/radare
+298382 ms       activityType:NSUserActivityTypeBrowsingWeb
+298382 ms       userInfo:{
+}
+298382 ms  restorationHandler:<__NSStackBlock__: 0x16f27a898>
+
+```
+
+This knowledge should help you when testing apps supporting Handoff.

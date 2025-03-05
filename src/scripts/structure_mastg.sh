@@ -1,32 +1,36 @@
-mkdir docs/MASTG
-mkdir docs/MASTG/Intro      
-mkdir docs/MASTG/General
-mkdir docs/MASTG/Android
-mkdir docs/MASTG/iOS
-mkdir docs/MASTG/References
+#!/bin/bash
+set -euo pipefail
 
-cp Document/0x0[1-6]*.md docs/MASTG
-cp Document/0x09*.md docs/MASTG
-cp -r tests docs/MASTG/
-cp -r techniques docs/MASTG/
-cp -r tools docs/MASTG/
-cp -r apps docs/MASTG/
+mkdir -p docs/MASTG
+mkdir -p docs/MASWE
 
-cp Document/tests.md docs/MASTG/tests/index.md
-cp Document/0x08b-Reference-Apps.md docs/MASTG/apps/index.md
-cp Document/0x08a-Testing-Tools.md docs/MASTG/tools/index.md
-cp Document/techniques.md docs/MASTG/techniques/index.md
+directories=("tests" "techniques" "tools" "apps" "tests-beta" "demos" "rules" "best-practices")
 
-mv docs/MASTG/0x0[1-3]*.md docs/MASTG/Intro
-mv docs/MASTG/0x04*.md docs/MASTG/General
-mv docs/MASTG/0x05*.md docs/MASTG/Android
-mv docs/MASTG/0x06*.md docs/MASTG/iOS
-mv docs/MASTG/0x09*.md docs/MASTG/Intro
+for dir in "${directories[@]}"; do
+    rm -rf "docs/MASTG/$dir"
+    cp -r "$dir" docs/MASTG/ || { echo "Failed to copy $dir"; exit 1; }
+done
+
+cp -r weaknesses/** docs/MASWE/ || { echo "Failed to copy weaknesses"; exit 1; }
+
+cp -r Document/0x0*.md docs/MASTG
+cp -r Document/index.md docs/MASTG
+cp docs/MASTG/0x08b-Reference-Apps.md docs/MASTG/apps/index.md
+cp docs/MASTG/0x08a-Testing-Tools.md docs/MASTG/tools/index.md
 
 cp -r Document/Images/ docs/assets/Images/
-find docs/MASTG/tests -name "*.md" -exec sed -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
-find docs/MASTG/techniques -name "*.md" -exec sed -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
-find docs/MASTG/tools -name "*.md" -exec sed -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
-find docs/MASTG/apps -name "*.md" -exec sed -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
-find docs/MASTG -name "*.md" -exec sed -i 's#<img src="Images/#<img src="../../../assets/Images/#g' {} \;
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    SED="gsed"
+else
+    SED="sed"
+fi
+
+find docs/MASTG/tests -name "*.md" -exec $SED -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
+find docs/MASTG/techniques -name "*.md" -exec $SED -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
+find docs/MASTG/tools -name "*.md" -exec $SED -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
+find docs/MASTG/apps -name "*.md" -exec $SED -i 's#<img src="Images/#<img src="../../../../../assets/Images/#g' {} \;
+find docs/MASTG -name "*.md" -exec $SED -i 's#<img src="Images/#<img src="../../../assets/Images/#g' {} \;
+
+find docs/MASTG -name "*.md" -exec $SED -i 's#Document/##g' {} \;
+find docs/MASWE -name "*.md" -exec $SED -i 's#Document/#MASTG/#g' {} \;

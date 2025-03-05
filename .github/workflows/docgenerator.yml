@@ -18,11 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
 
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.x
     - name: Install dependencies
@@ -41,14 +41,11 @@ jobs:
     - name: Assemble Chapters
       run: python3 src/scripts/assemble_chapters_for_pdf.py
 
-    - name: Process Files
-      run: python3 src/scripts/transform_files.py
-
     - name: Generate English PDF
       run: ./src/pandocker/pandoc_makedocs.sh Document ${{env.MASTG_VERSION}} ${{env.MASVS_VERSION}}
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: OWASP_MASTG
         path: OWASP_MASTG*
@@ -57,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 1
     
-    - uses: actions/setup-python@v4
+    - uses: actions/setup-python@v5
       with:
         python-version: 3.x
     - name: Install dependencies
@@ -89,15 +86,15 @@ jobs:
     - name: Confirm MASVS Release Tag
       run: echo ${{env.MASVS_VERSION}}
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         repository: "OWASP/owasp-masvs.git"
         ref: ${{env.MASVS_VERSION}}
         fetch-depth: 1
-        path: src/scripts/owasp-masvs
+        path: owasp-masvs
 
     - name: Get MASVS Current Commit ID
-      run: cd src/scripts/owasp-masvs && echo "MASVS_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+      run: cd owasp-masvs && echo "MASVS_COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
     - name: Confirm MASTG Current Commit ID
       run: echo ${{env.MASVS_COMMIT}}
 
@@ -111,7 +108,7 @@ jobs:
     #     path: src/scripts/masvs_full_*.yaml
 
     - name: Upload Checklists
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: Checklists
         path: OWASP_MAS_Checklist*.xlsx
@@ -121,7 +118,7 @@ jobs:
     needs: [Generate-MASTG-Documents, Generate-Checklists]
     if: startsWith(github.ref, 'refs/tags/') && (github.actor == 'cpholguera' || github.actor == 'sushi2k')
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v4
       - name: List Downloaded document (sampling of download-artifact)
         run: ls -l OWASP_MASTG*
 

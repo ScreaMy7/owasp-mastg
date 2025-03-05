@@ -8,6 +8,9 @@ title: Make Sure That Free Security Features Are Activated
 masvs_v1_levels:
 - L1
 - L2
+status: deprecated
+covered_by: [MASTG-TEST-0228, MASTG-TEST-0229, MASTG-TEST-0230]
+deprecation_note: New version available in MASTG V2
 ---
 
 ## Overview
@@ -61,8 +64,14 @@ All the features are enabled in these examples:
 
 ## Dynamic Analysis
 
-These checks can be performed dynamically using [objection](../../../Document/0x08a-Testing-Tools.md#objection). Here's one example:
+These checks can be performed dynamically using @MASTG-TOOL-0038. Here's one example:
 
 ```bash
 com.yourcompany.PPClient on (iPhone: 13.2.3) [usb] # ios info binary
 Name                  Type     Encrypted    PIE    ARC    Canary    Stack Exec    RootSafe
+--------------------  -------  -----------  -----  -----  --------  ------------  ----------
+PayPal                execute  True         True   True   True      False         False
+CardinalMobile        dylib    False        False  True   True      False         False
+FraudForce            dylib    False        False  True   True      False         False
+...
+```

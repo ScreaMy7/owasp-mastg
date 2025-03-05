@@ -12,4 +12,4 @@ cd apkx
 sudo ./install.sh
 ```
 
-This should copy apkx to `/usr/local/bin`. See section "[Decompiling Java Code](0x05c-Reverse-Engineering-and-Tampering.md#decompiling-java-code "Decompiling Java Code")" of the "Reverse Engineering and Tampering" chapter for more information about usage.
+This should copy apkx to `/usr/local/bin`. See @MASTG-TECH-0017 for more information about usage.

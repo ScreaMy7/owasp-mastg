@@ -5,7 +5,7 @@ platform: ios
 
 Runtime reverse engineering can be seen as the on-the-fly version of reverse engineering where you don't have the binary data to your host computer. Instead, you'll analyze it straight from the memory of the app.
 
-We'll keep using the [iGoat-Swift](0x08b-Reference-Apps.md#igoat-swift) app, open a session with r2frida `r2 frida://usb//iGoat-Swift` and you can start by displaying the target binary information by using the `:i` command:
+We'll keep using the @MASTG-APP-0028 app, open a session with @MASTG-TOOL-0036 `r2 frida://usb//iGoat-Swift` and you can start by displaying the target binary information by using the `:i` command:
 
 ```bash
 [0x00000000]> :i
@@ -30,7 +30,7 @@ Search all symbols of a certain module with `:is <lib>`, e.g. `:is libboringssl.
 The following does a case-insensitive search (grep) for symbols including "aes" (`~+aes`).
 
 ```bash
-[0x00000000]> \is libboringssl.dylib~+aes
+[0x00000000]> :is libboringssl.dylib~+aes
 0x1863d6ed8 s EVP_aes_128_cbc
 0x1863d6ee4 s EVP_aes_192_cbc
 0x1863d6ef0 s EVP_aes_256_cbc
@@ -52,7 +52,7 @@ Or you might prefer to look into the imports/exports. For example:
 The next thing you might want to look at are the classes:
 
 ```bash
-[0x00000000]> \ic~+passcode
+[0x00000000]> :ic~+passcode
 PSPasscodeField
 _UITextFieldPasscodeCutoutBackground
 UIPasscodeField
@@ -63,7 +63,7 @@ PasscodeFieldCell
 List class fields:
 
 ```bash
-[0x19687256c]> \ic UIPasscodeField
+[0x19687256c]> :ic UIPasscodeField
 0x000000018eec6680 - becomeFirstResponder
 0x000000018eec5d78 - appendString:
 0x000000018eec6650 - canBecomeFirstResponder
@@ -98,7 +98,7 @@ Imagine that you are interested into `0x000000018eec5c8c - setStringValue:`. You
 
 Finally, instead of doing a full memory search for strings, you may want to retrieve the strings from a certain binary and filter them, as you'd do _offline_ with radare2. For this you have to find the binary, seek to it and then run the `:iz` command.
 
-> It's recommended to apply a filter with a keyword `~<keyword>`/`~+<keyword>` to minimize the terminal output. If just want to explore all results you can also pipe them to the internal less `\iz~..`.
+> It's recommended to apply a filter with a keyword `~<keyword>`/`~+<keyword>` to minimize the terminal output. If just want to explore all results you can also pipe them to the internal less `:iz~..`.
 
 ```bash
 [0x00000000]> :il~iGoa

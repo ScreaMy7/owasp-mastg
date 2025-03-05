@@ -13,7 +13,7 @@ When testing an app, process exploration can provide the tester with deep insigh
 
 As you can see, these tasks are rather supportive and/or passive, they'll help us collect data and information that will support other techniques. Therefore, they're normally used in combination with other techniques such as method hooking.
 
-In the following sections you will be using [r2frida](0x08a-Testing-Tools.md#r2frida) to retrieve information straight from the app runtime. First start by opening an r2frida session to the target app (e.g. [iGoat-Swift](0x08b-Reference-Apps.md#igoat-swift)) that should be running on your iPhone (connected per USB). Use the following command:
+In the following sections you will be using @MASTG-TOOL-0036 to retrieve information straight from the app runtime. First start by opening an r2frida session to the target app (e.g. @MASTG-APP-0028) that should be running on your iPhone (connected per USB). Use the following command:
 
 ```bash
 r2 frida://usb//iGoat-Swift
@@ -58,9 +58,9 @@ If you're only interested into the modules (binaries and libraries) that the app
 0x0000000100f60000 Realm
 ```
 
-As you might expect you can correlate the addresses of the libraries with the memory maps: e.g. the main app binary [iGoat-Swift](0x08b-Reference-Apps.md#igoat-swift) is located at `0x0000000100b7c000` and the Realm Framework at `0x0000000100f60000`.
+As you might expect you can correlate the addresses of the libraries with the memory maps: e.g. the main app from @MASTG-APP-0028 is called "iGoat-Swift" and is located at `0x0000000100b7c000` and the Realm Framework at `0x0000000100f60000`.
 
-You can also use objection to display the same information.
+You can also use @MASTG-TOOL-0074 to display the same information.
 
 ```bash
 $ objection --gadget OWASP.iGoat-Swift explore
@@ -80,10 +80,10 @@ libc++.1.dylib                    0x1847c0000  368640 (360.0 KiB)    /usr/lib/li
 
 In-memory search is a very useful technique to test for sensitive data that might be present in the app memory.
 
-See r2frida's help on the search command (`\/?`) to learn about the search command and get a list of options. The following shows only a subset of them:
+See r2frida's help on the search command (`:/?`) to learn about the search command and get a list of options. The following shows only a subset of them:
 
 ```bash
-[0x00000000]> \/?
+[0x00000000]> :/?
  /      search
  /j     search json
  /w     search wide
@@ -93,18 +93,18 @@ See r2frida's help on the search command (`\/?`) to learn about the search comma
 ...
 ```
 
-You can adjust your search by using the search settings `\e~search`. For example, `\e search.quiet=true;` will print only the results and hide search progress:
+You can adjust your search by using the search settings `:e~search`. For example, `:e search.quiet=true;` will print only the results and hide search progress:
 
 ```bash
-[0x00000000]> \e~search
+[0x00000000]> :e~search
 e search.in=perm:r--
 e search.quiet=false
 ```
 
-For now, we'll continue with the defaults and concentrate on string search. In this first example, you can start by searching for something that you know should be located in the main binary of the app:
+For now, we'll continue with the defaults and concentrate on string search. In this first example, you can start by searching for something that you know should be located in the main binary of the app (for example, the name of the @MASTG-APP-0028 app):
 
 ```bash
-[0x00000000]> \/ iGoat
+[0x00000000]> :/ iGoat
 Searching 5 bytes: 69 47 6f 61 74
 Searching 5 bytes in [0x0000000100b7c000-0x0000000100de0000]
 ...
@@ -124,12 +124,12 @@ Now take the first hit, seek to it and check your current location in the memory
 0x0000000100b7c000 - 0x0000000100de0000 r-x /private/var/containers/Bundle/Application/3ADAF47D-A734-49FA-B274-FBCA66589E67/iGoat-Swift.app/iGoat-Swift
 ```
 
-As expected, you are located in the region of the main [iGoat-Swift](0x08b-Reference-Apps.md#igoat-swift) binary (r-x, read and execute). In the previous section, you saw that the main binary is located between `0x0000000100b7c000` and `0x0000000100e97000`.
+As expected, you are located in the region of the main iGoat-Swift binary (r-x, read and execute). In the previous section, you saw that the main binary is located between `0x0000000100b7c000` and `0x0000000100e97000`.
 
-Now, for this second example, you can search for something that's not in the app binary nor in any loaded library, typically user input. Open the [iGoat-Swift](0x08b-Reference-Apps.md#igoat-swift) app and navigate in the menu to **Authentication** -> **Remote Authentication** -> **Start**. There you'll find a password field that you can overwrite. Write the string "owasp-mstg" but do not click on **Login** just yet. Perform the following two steps.
+Now, for this second example, you can search for something that's not in the app binary nor in any loaded library, typically user input. Open the @MASTG-APP-0028 app and navigate in the menu to **Authentication** -> **Remote Authentication** -> **Start**. There you'll find a password field that you can overwrite. Write the string "owasp-mstg" but do not click on **Login** just yet. Perform the following two steps.
 
 ```bash
-[0x00000000]> \/ owasp-mstg
+[0x00000000]> :/ owasp-mstg
 hits: 1
 0x1c06619c0 hit3_0 owasp-mstg
 ```
@@ -146,7 +146,7 @@ Now you know that the string is located in a rw- (read and write) region of the 
 
 Additionally, you can search for occurrences of the [wide version of the string](https://en.wikipedia.org/wiki/Wide_character "Wide character") (`/w`) and, again, check their memory regions:
 
-> This time we run the `\dm.` command for all `@@` hits matching the glob `hit5_*`.
+> This time we run the `:dm.` command for all `@@` hits matching the glob `hit5_*`.
 
 ```bash
 [0x00000000]> /w owasp-mstg
@@ -157,7 +157,7 @@ hits: 2
 0x1020d1280 hit5_0 6f0077006100730070002d006d00730074006700
 0x1030c9c85 hit5_1 6f0077006100730070002d006d00730074006700
 
-[0x00000000]> \dm.@@ hit5_*
+[0x00000000]> :dm.@@ hit5_*
 0x0000000102000000 - 0x0000000102100000 rw-
 0x0000000103084000 - 0x00000001030cc000 rw-
 ```
@@ -168,7 +168,7 @@ In-memory search can be very useful to quickly know if certain data is located i
 
 ## Memory Dump
 
-You can dump the app's process memory with [objection](0x08a-Testing-Tools.md#objection) and [Fridump](https://github.com/Nightbringer21/fridump "Fridump"). To take advantage of these tools on a non-jailbroken device, the Android app must be repackaged with `frida-gadget.so` and re-signed. A detailed explanation of this process is in the section "[Dynamic Analysis on Non-Jailbroken Devices](#dynamic-analysis-on-non-jailbroken-devices "Dynamic Analysis on Non-Jailbroken Devices"). To use these tools on a jailbroken phone, simply have frida-server installed and running.
+You can dump the app's process memory with @MASTG-TOOL-0074 and @MASTG-TOOL-0106. To take advantage of these tools on a non-jailbroken device, the Android app must be repackaged with `frida-gadget.so` and re-signed. A detailed explanation of this process is described in @MASTG-TECH-0090. To use these tools on a jailbroken phone, simply have frida-server installed and running.
 
 With objection it is possible to dump all memory of the running process on the device by using the command `memory dump all`.
 

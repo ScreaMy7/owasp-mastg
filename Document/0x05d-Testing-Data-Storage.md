@@ -39,23 +39,14 @@ Understanding each relevant data storage function is crucial for performing the 
 
 ### Shared Preferences
 
-The [SharedPreferences](https://developer.android.com/training/data-storage/shared-preferences "Shared Preferences") API is commonly used to permanently save small collections of key-value pairs. Data stored in a SharedPreferences object is written to a plain-text XML file. The SharedPreferences object can be declared world-readable (accessible to all apps) or private.
-Misuse of the SharedPreferences API can often lead to exposure of sensitive data. Consider the following example:
+The [`SharedPreferences`](https://developer.android.com/training/data-storage/shared-preferences "Shared Preferences") API is commonly used to permanently save small collections of key-value pairs.
 
-Example for Java:
+Since Android 4.2 (API level 17) the `SharedPreferences` object can only be declared to be private (and not world-readable, i.e. accessible to all apps). However, since data stored in a `SharedPreferences` object is written to a plain-text XML file so its misuse can often lead to exposure of sensitive data.
 
-```java
-SharedPreferences sharedPref = getSharedPreferences("key", MODE_WORLD_READABLE);
-SharedPreferences.Editor editor = sharedPref.edit();
-editor.putString("username", "administrator");
-editor.putString("password", "supersecret");
-editor.commit();
-```
-
-Example for Kotlin:
+Consider the following example:
 
 ```kotlin
-var sharedPref = getSharedPreferences("key", Context.MODE_WORLD_READABLE)
+var sharedPref = getSharedPreferences("key", Context.MODE_PRIVATE)
 var editor = sharedPref.edit()
 editor.putString("username", "administrator")
 editor.putString("password", "supersecret")
@@ -74,14 +65,31 @@ Once the activity has been called, the file key.xml will be created with the pro
 </map>
 ```
 
-- `MODE_WORLD_READABLE` allows all applications to access and read the contents of `key.xml`.
+`MODE_PRIVATE` makes the file only accessible by the calling app. See ["Use SharedPreferences in private mode"](https://developer.android.com/privacy-and-security/security-best-practices#sharedpreferences).
 
-```bash
-root@hermes:/data/data/sg.vp.owasp_mobile.myfirstapp/shared_prefs # ls -la
--rw-rw-r-- u0_a118    170 2016-04-23 16:51 key.xml
+> Other insecure modes exist, such as `MODE_WORLD_READABLE` and `MODE_WORLD_WRITEABLE`, but they have been deprecated since Android 4.2 (API level 17) and [removed in Android 7.0 (API Level 24)](https://developer.android.com/reference/android/os/Build.VERSION_CODES#N). Therefore, only apps running on an older OS version (`android:minSdkVersion` less than 17) will be affected. Otherwise, Android will throw a [SecurityException](https://developer.android.com/reference/java/lang/SecurityException). If an app needs to share private files with other apps, it is best to use a [FileProvider](https://developer.android.com/reference/androidx/core/content/FileProvider) with the [FLAG_GRANT_READ_URI_PERMISSION](https://developer.android.com/reference/android/content/Intent#FLAG_GRANT_READ_URI_PERMISSION). See [Sharing Files](https://developer.android.com/training/secure-file-sharing) for more details.
+
+You might also use [`EncryptedSharedPreferences`](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences), which is wrapper of `SharedPreferences` that automatically encrypts all data stored to the shared preferences.
+
+```kotlin
+var masterKey: MasterKey? = null
+masterKey = Builder(this)
+    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+    .build()
+
+val sharedPreferences: SharedPreferences = EncryptedSharedPreferences.create(
+    this,
+    "secret_shared_prefs",
+    masterKey,
+    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+)
+
+val editor = sharedPreferences.edit()
+editor.putString("username", "administrator")
+editor.putString("password", "supersecret")
+editor.commit()
 ```
-
-> Please note that `MODE_WORLD_READABLE` and `MODE_WORLD_WRITEABLE` were deprecated starting on API level 17. Although newer devices may not be affected by this, applications compiled with an `android:targetSdkVersion` value less than 17 may be affected if they run on an OS version that was released before Android 4.2 (API level 17).
 
 ### Databases
 
@@ -176,7 +184,69 @@ Realm realm = Realm.getInstance(config);
 
 ```
 
-If the database _is not_ encrypted, you should be able to obtain the data. If the database _is_ encrypted, determine whether the key is hard-coded in the source or resources and whether it is stored unprotected in shared preferences or some other location.
+Access to the data depends on the encryption: unencrypted databases are easily accessible, while encrypted ones require investigation into how the key is managed - whether it's hardcoded or stored unencrypted in an insecure location such as shared preferences, or securely in the platform's KeyStore (which is best practice).
+
+However, if an attacker has sufficient access to the device (e.g. root access) or can repackage the app, they can still retrieve encryption keys at runtime using tools like Frida. The following Frida script demonstrates how to intercept the Realm encryption key and access the contents of the encrypted database.
+
+```javascript
+
+'use strict';
+
+function modulus(x, n){
+    return ((x % n) + n) % n;
+}
+
+function bytesToHex(bytes) {
+    for (var hex = [], i = 0; i < bytes.length; i++) { hex.push(((bytes[i] >>> 4) & 0xF).toString(16).toUpperCase());
+        hex.push((bytes[i] & 0xF).toString(16).toUpperCase());
+    }
+    return hex.join("");
+}
+
+function b2s(array) {
+    var result = "";
+    for (var i = 0; i < array.length; i++) {
+        result += String.fromCharCode(modulus(array[i], 256));
+    }
+    return result;
+}
+
+// Main Modulus and function.
+
+if(Java.available){
+    console.log("Java is available");
+    console.log("[+] Android Device.. Hooking Realm Configuration.");
+
+    Java.perform(function(){
+        var RealmConfiguration = Java.use('io.realm.RealmConfiguration');
+        if(RealmConfiguration){
+            console.log("[++] Realm Configuration is available");
+            Java.choose("io.realm.Realm", {
+                onMatch: function(instance)
+                {
+                    console.log("[==] Opened Realm Database...Obtaining the key...")
+                    console.log(instance);
+                    console.log(instance.getPath());
+                    console.log(instance.getVersion());
+                    var encryption_key = instance.getConfiguration().getEncryptionKey();
+                    console.log(encryption_key);
+                    console.log("Length of the key: " + encryption_key.length); 
+                    console.log("Decryption Key:", bytesToHex(encryption_key));
+
+                }, 
+                onComplete: function(instance){
+                    RealmConfiguration.$init.overload('java.io.File', 'java.lang.String', '[B', 'long', 'io.realm.RealmMigration', 'boolean', 'io.realm.internal.OsRealmConfig$Durability', 'io.realm.internal.RealmProxyMediator', 'io.realm.rx.RxObservableFactory', 'io.realm.coroutines.FlowFactory', 'io.realm.Realm$Transaction', 'boolean', 'io.realm.CompactOnLaunchCallback', 'boolean', 'long', 'boolean', 'boolean').implementation = function(arg1)
+                    {
+                        console.log("[==] Realm onComplete Finished..")
+                        
+                    }
+                }
+                   
+            });
+        }
+    });
+}
+```
 
 ### Internal Storage
 
@@ -254,7 +324,7 @@ You can use stored keys in one of two modes:
 
 2. Users are authorized to use a specific cryptographic operation that is associated with one key. In this mode, users must request a separate authorization for each operation that involves the key. Currently, fingerprint authentication is the only way to request such authorization.
 
-The level of security afforded by the Android KeyStore depends on its implementation, which depends on the device. Most modern devices offer a [hardware-backed KeyStore implementation](0x05d-Testing-Data-Storage.md#hardware-backed-android-keyStore): keys are generated and used in a Trusted Execution Environment (TEE) or a Secure Element (SE), and the operating system can't access them directly. This means that the encryption keys themselves can't be easily retrieved, even from a rooted device. You can verify hardware-backed keys with [Key Attestation](0x05d-Testing-Data-Storage.md#key-attestation). You can determine whether the keys are inside the secure hardware by checking the return value of the `isInsideSecureHardware` method, which is part of the [`KeyInfo` class](https://developer.android.com/reference/android/security/keystore/KeyInfo.html "Class KeyInfo").
+The level of security afforded by the Android KeyStore depends on its implementation, which depends on the device. Most modern devices offer a [hardware-backed KeyStore implementation](#hardware-backed-android-keystore): keys are generated and used in a Trusted Execution Environment (TEE) or a Secure Element (SE), and the operating system can't access them directly. This means that the encryption keys themselves can't be easily retrieved, even from a rooted device. You can verify hardware-backed keys with [Key Attestation](#key-attestation). You can determine whether the keys are inside the secure hardware by checking the return value of the `isInsideSecureHardware` method, which is part of the [`KeyInfo` class](https://developer.android.com/reference/android/security/keystore/KeyInfo.html "Class KeyInfo").
 
 >Note that the relevant KeyInfo indicates that secret keys and HMAC keys are insecurely stored on several devices despite private keys being correctly stored on the secure hardware.
 
@@ -316,7 +386,7 @@ In the above JSON snippet, the keys have the following meaning:
 
 > Note: The `sig` is generated by concatenating `authData` and `clientDataHash` (challenge sent by the server) and signing through the credential private key using the `alg` signing algorithm. The same is verified at the server-side by using the public key in the first certificate.
 
-For more understanding on the implementation guidelines, you can refer to [Google Sample Code](https://github.com/googlesamples/android-key-attestation/blob/master/server/src/main/java/com/android/example/KeyAttestationExample.java "Google Sample Code For Android Key Attestation").
+For more understanding on the implementation guidelines, you can refer to [Google Sample Code](https://github.com/google/android-key-attestation/blob/master/src/main/java/com/android/example/KeyAttestationExample.java "Google Sample Code For Android Key Attestation").
 
 For the security analysis perspective, the analysts may perform the following checks for the secure implementation of Key Attestation:
 
@@ -383,7 +453,7 @@ Storing a Key - from most secure to least secure:
 
 #### Storing Keys Using Hardware-backed Android KeyStore
 
-You can use the [hardware-backed Android KeyStore](0x05d-Testing-Data-Storage.md#hardware-backed-android-keystore) if the device is running Android 7.0 (API level 24) and above with available hardware component (Trusted Execution Environment (TEE) or a Secure Element (SE)). You can even verify that the keys are hardware-backed by using the guidelines provided for [the secure implementation of Key Attestation](0x05d-Testing-Data-Storage.md#key-attestation). If a hardware component is not available and/or support for Android 6.0 (API level 23) and below is required, then you might want to store your keys on a remote server and make them available after authentication.
+You can use the [hardware-backed Android KeyStore](#hardware-backed-android-keystore) if the device is running Android 7.0 (API level 24) and above with available hardware component (Trusted Execution Environment (TEE) or a Secure Element (SE)). You can even verify that the keys are hardware-backed by using the guidelines provided for [the secure implementation of Key Attestation](#key-attestation). If a hardware component is not available and/or support for Android 6.0 (API level 23) and below is required, then you might want to store your keys on a remote server and make them available after authentication.
 
 #### Storing Keys on the Server
 

@@ -9,7 +9,7 @@ Coming from a Linux background you'd expect the `ptrace` system call to be as po
 
 ## Debugging with LLDB
 
-The default debugserver executable that Xcode installs can't be used to attach to arbitrary processes (it is usually used only for debugging self-developed apps deployed with Xcode). To enable debugging of third-party apps, the `task_for_pid-allow` entitlement must be added to the debugserver executable so that the debugger process can call `task_for_pid` to obtain the target Mach task port as seen before. An easy way to do this is to add the entitlement to the [debugserver binary shipped with Xcode](http://iphonedevwiki.net/index.php/Debugserver "Debug Server on the iPhone Dev Wiki").
+The default debugserver executable that Xcode installs can't be used to attach to arbitrary processes (it is usually used only for debugging self-developed apps deployed with Xcode). To enable debugging of third-party apps, the `task_for_pid-allow` entitlement must be added to the debugserver executable so that the debugger process can call `task_for_pid` to obtain the target Mach task port as seen before. An easy way to do this is to add the entitlement to the [debugserver binary shipped with Xcode](https://web.archive.org/web/20190223224236/https://iphonedevwiki.net/index.php/Debugserver "Debug Server on the iPhone Dev Wiki").
 
 To obtain the executable, mount the following DMG image:
 
@@ -36,7 +36,7 @@ You'll find the debugserver executable in the `/usr/bin/` directory on the mount
 </plist>
 ```
 
-Apply the entitlement with codesign:
+Apply the entitlement with @MASTG-TOOL-0114:
 
 ```bash
 codesign -s - --entitlements entitlements.plist -f debugserver
@@ -55,55 +55,55 @@ Note: On iOS 12 and higher, use the following procedure to sign the debugserver 
 
 2) Connect to the device via SSH and create the file, named entitlements.xml, with the following content:
 
-    ```xml
-    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-    <plist version="1.0">
-    <dict>
-        <key>platform-application</key>
-        <true/>
-        <key>com.apple.private.security.no-container</key>
-        <true/>
-        <key>com.apple.private.skip-library-validation</key>
-        <true/>
-        <key>com.apple.backboardd.debugapplications</key>
-        <true/>
-        <key>com.apple.backboardd.launchapplications</key>
-        <true/>
-        <key>com.apple.diagnosticd.diagnostic</key>
-        <true/>
-        <key>com.apple.frontboard.debugapplications</key>
-        <true/>
-        <key>com.apple.frontboard.launchapplications</key>
-        <true/>
-        <key>com.apple.security.network.client</key>
-        <true/>
-        <key>com.apple.security.network.server</key>
-        <true/>
-        <key>com.apple.springboard.debugapplications</key>
-        <true/>
-        <key>com.apple.system-task-ports</key>
-        <true/>
-        <key>get-task-allow</key>
-        <true/>
-        <key>run-unsigned-code</key>
-        <true/>
-        <key>task_for_pid-allow</key>
-        <true/>
-    </dict>
-    </plist>
-    ```
+   ```xml
+   <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+   <plist version="1.0">
+   <dict>
+      <key>platform-application</key>
+      <true/>
+      <key>com.apple.private.security.no-container</key>
+      <true/>
+      <key>com.apple.private.skip-library-validation</key>
+      <true/>
+      <key>com.apple.backboardd.debugapplications</key>
+      <true/>
+      <key>com.apple.backboardd.launchapplications</key>
+      <true/>
+      <key>com.apple.diagnosticd.diagnostic</key>
+      <true/>
+      <key>com.apple.frontboard.debugapplications</key>
+      <true/>
+      <key>com.apple.frontboard.launchapplications</key>
+      <true/>
+      <key>com.apple.security.network.client</key>
+      <true/>
+      <key>com.apple.security.network.server</key>
+      <true/>
+      <key>com.apple.springboard.debugapplications</key>
+      <true/>
+      <key>com.apple.system-task-ports</key>
+      <true/>
+      <key>get-task-allow</key>
+      <true/>
+      <key>run-unsigned-code</key>
+      <true/>
+      <key>task_for_pid-allow</key>
+      <true/>
+   </dict>
+   </plist>
+   ```
 
-3) Type the following command to sign the debugserver binary:
+3) Type the following command to sign the debugserver binary using @MASTG-TOOL-0111:
 
-    ```bash
-    ldid -Sentitlements.xml debugserver
-    ```
+   ```bash
+   ldid -Sentitlements.xml debugserver
+   ```
 
 4) Verify that the debugserver binary can be executed via the following command:
 
-    ```bash
-    ./debugserver
-    ```
+```bash
+./debugserver
+```
 
 You can now attach debugserver to any process running on the device.
 
@@ -136,7 +136,7 @@ Typing `image list` gives a list of main executable and all dependent libraries.
 
 ## Debugging Release Apps
 
-In the previous section we learned about how to setup a debugging environment on an iOS device using LLDB. In this section we will use this information and learn how to debug a 3rd party release application. We will continue using the [UnCrackable App for iOS Level 1](0x08b-Reference-Apps.md#ios-uncrackable-l1) and solve it using a debugger.
+In the previous section we learned about how to setup a debugging environment on an iOS device using LLDB. In this section we will use this information and learn how to debug a 3rd party release application. We will continue using the @MASTG-APP-0025 and solve it using a debugger.
 
 In contrast to a debug build, the code compiled for a release build is optimized to achieve maximum performance and minimum binary build size. As a general best practice, most of the debug symbols are stripped for a release build, adding a layer of complexity when reverse engineering and debugging the binaries.
 
@@ -155,7 +155,7 @@ When a binary is opened in a disassembler like Ghidra, it loads a binary by emul
 
 <img src="Images/Chapters/0x06c/debugging_ghidra_image_base_address.png" width="100%" />
 
-From our previous analysis of the [UnCrackable Level 1 application](0x08b-Reference-Apps.md#ios-uncrackable-l1) in "[Manual (Reversed) Code Review](#manual-reversed-code-review)" section, the value of the hidden string is stored in a label with the `hidden` flag set. In the disassembly, the text value of this label is stored in register `X21`, stored via `mov` from `X0`, at offset 0x100004520. This is our _breakpoint offset_.
+The value of the hidden string is stored in a label with the `hidden` flag set. In the disassembly, the text value of this label is stored in register `X21`, stored via `mov` from `X0`, at offset 0x100004520. This is our _breakpoint offset_.
 
 <img src="Images/Chapters/0x06c/debugging_ghidra_breakpoint.png" width="100%" />
 
