@@ -21,7 +21,7 @@ The output shows the list of dangerous permissions used by the application.
 
 ## Evaluation
 
-- The test fails if there are any dangerous permissions in the app. 
+- The test fails if there are any dangerous permissions in the app.
 - To obtain a list of [dangerous permissions](https://android.googlesource.com/platform/frameworks/base/%2B/master/core/res/AndroidManifest.xml#886) in `AndroidManifest.xml`, examine the permission attribute `android:protectionLevel="dangerous"`.
 
 **Context Consideration**:
