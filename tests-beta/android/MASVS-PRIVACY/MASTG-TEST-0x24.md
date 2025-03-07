@@ -25,6 +25,4 @@ The test fails if there are any dangerous permissions in the app. To obtain a li
 
 **Context Consideration**:
 
-To reduce false positives, dangerous permissions in Android applications should be carefully evaluated. Permissions should only be requested if they are essential to the functionality of the application, and users must be informed of their purpose before access is granted. Following the principle of least privilege, permissions should only be granted when actively needed to minimise security risks.
-
-
+To reduce false positives, dangerous permissions in Android applications should be carefully evaluated. Permissions should only be requested if they are essential to the functionality of the application, and users must be informed of their purpose before access is granted.
