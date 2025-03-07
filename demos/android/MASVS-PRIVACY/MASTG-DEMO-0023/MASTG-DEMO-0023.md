@@ -1,13 +1,13 @@
 ---
 platform: android
-title: Application using dangerous permissions.
-id: MASTG-DEMO-0023
+title: Application using dangerous permissions
+id: MASTG-DEMO-0024
 code: [kotlin]
 ---
 
 ### Sample
 
-{{ AndroidManifest_reversed.xml.xml }}
+{{ AndroidManifest_reversed.xml }}
 
 ### Steps
 
@@ -19,7 +19,7 @@ Let's run our @MASTG-TOOL-0110 rule against the sample manifest file.
 
 ### Observation
 
-The rule has identified five instances in the AndroidManifest file where the application requires unsafe permissions.
+The rule has identified four instances in the AndroidManifest file where the application requires dangerous permissions.
 
 {{ output.txt }}
 
@@ -27,8 +27,7 @@ The rule has identified five instances in the AndroidManifest file where the app
 
 The reported instances include:
 
-- Line 5 uses `INTERNET` permissions.
-- Line 6 uses `WRITE_EXTERNAL_STORAGE` permissions.
-- Line 7 uses `READ_CONTACTS` permissions.
-- Line 8 uses `READ_EXTERNAL_STORAGE` permissions.
-- Line 9 uses `ACCESS_FINE_LOCATION` permissions.
+- Line 3 uses `WRITE_EXTERNAL_STORAGE` permissions.
+- Line 4 uses `READ_CONTACTS` permissions.
+- Line 5 uses `READ_EXTERNAL_STORAGE` permissions.
+- Line 6 uses `ACCESS_FINE_LOCATION` permissions.

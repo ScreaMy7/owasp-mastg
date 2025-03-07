@@ -1,1 +1,1 @@
-NO_COLOR=true semgrep -c ../../../../rules/mastg-android-dangerous-app-permissons.yaml ./AndroidManifest_reversed.xml.xml --text -o output.txt
+NO_COLOR=true semgrep -c ../../../../rules/mastg-android-dangerous-app-permissions.yaml ./AndroidManifest_reversed.xml --text -o output.txt

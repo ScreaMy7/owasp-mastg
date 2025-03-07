@@ -3,7 +3,7 @@ title: Obtaining App Permissions from Android Applications
 platform: android 
 ---
 
-Obtaining App Permissions from Android Applications. There are several ways to obtain permissions from an Android application. Below are the tools and techniques commonly used:
+Permissions in Android applications are obtained through various mechanisms to access sensitive data and system features, such as the camera, location, or storage. Required permissions are declared in the `AndroidManifest.xml` file using `<uses-permission>` tags. There are several ways to obtain permissions from an Android application. Below are the tools and techniques commonly used:
 
 ## Using the AndroidManifest
 
@@ -11,7 +11,7 @@ Extract the `AndroidManifest.xml` as explained in @MASTG-TECH-0117 and retrieve 
 
 ## Using @MASTG-TOOL-0124
 
-Besides manually inspecting the `AndroidManifest.xml` file, you can use the Android Asset Packaging Tool (AAPT) to examine the permissions of an APK file. AAPT is included in the Android SDK within the build-tools folder.
+You can check the permissions of an APK file not only by manually reviewing the `AndroidManifest.xml` file but also by utilizing the Android Asset Packaging Tool (aapt), which is included in the build-tools folder of the Android SDK.
 
 ```bash
 $ aapt d permissions org.owasp.mastestapp.apk
@@ -23,8 +23,6 @@ uses-permission: name='android.permission.READ_CONTACTS'
 uses-permission: name='android.permission.READ_EXTERNAL_STORAGE'
 permission: org.owasp.mastestapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 uses-permission: name='org.owasp.mastestapp.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION'
-
-This command lists all the permissions requested by the app in a concise format, saving time compared to manual inspection.
 ```
 
 ## Using @MASTG-TOOL-0004
@@ -49,8 +47,6 @@ $ adb shell dumpsys package org.owasp.mastestapp | grep permission
         android.permission.READ_CONTACTS: granted=false
 ```
 
-This command retrieves the permissions declared in the app, as well as runtime-granted permissions if the app is installed on a device. It is especially useful during dynamic analysis or when testing an app in a live environment.
-
 Reference:
 
-- To obtain a list of [dangerous permissions](https://android.googlesource.com/platform/frameworks/base/%2B/master/core/res/AndroidManifest.xml#886) in `AndroidManifest.xml`, identify the permission with attribute `android:protectionLevel="dangerous"`.
+- To get a list of [dangerous permissions](https://android.googlesource.com/platform/frameworks/base/%2B/master/core/res/AndroidManifest.xml#886) in `AndroidManifest.xml`, look for permissions that have the attribute `android:protectionLevel="dangerous"`.
