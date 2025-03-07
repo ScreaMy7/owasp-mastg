@@ -7,7 +7,7 @@ code: [kotlin]
 
 ### Sample
 
-{{ AndroidManifest.xml }}
+{{ AndroidManifest.xml # AndroidManifest_reversed.xml }}
 
 ### Steps
 
