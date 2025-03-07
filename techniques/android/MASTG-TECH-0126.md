@@ -3,7 +3,7 @@ title: Obtaining App Permissions from Android Applications
 platform: android 
 ---
 
-Permissions in Android applications are obtained through various mechanisms to access sensitive data and system features, such as the camera, location, or storage. Required permissions are declared in the `AndroidManifest.xml` file using `<uses-permission>` tags. There are several ways to obtain permissions from an Android application. Below are the tools and techniques commonly used:
+In Android applications, permissions are acquired through different methods to access information and system functionalities, including the camera, location, or storage. The necessary permissions are specified in the `AndroidManifest.xml` file with `<uses-permission>` tags.
 
 ## Using the AndroidManifest
 

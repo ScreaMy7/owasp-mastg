@@ -7,7 +7,7 @@ weakness: MASWE-0117
 
 ## Overview
 
-Android applications request various permissions to access system resources and user data. Some of these permissions are categorized as dangerous permissions because they grant access to sensitive information or critical device functions, such as location, SMS, contacts, and microphone. Testing these permissions is essential to identify potential security risks, ensure compliance with best practices, and prevent unauthorized access.
+In Android applications, permissions are acquired through different methods to access information and system functionalities, including the camera, location, or storage. The necessary permissions are specified in the `AndroidManifest.xml` file with `<uses-permission>` tags.
 
 ## Steps
 
