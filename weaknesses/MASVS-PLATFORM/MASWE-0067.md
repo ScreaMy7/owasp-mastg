@@ -21,7 +21,7 @@ status: draft
 
 ## Overview
 
-The `android:debuggable` flag in an Android application's `AndroidManifest.xml`  and the `get-task-allow` determines whether the application is debuggable. These settings, intended for debugging during development, allow attackers to attach debuggers, inspect application memory, modify code at runtime and easily reverse engineer the application. This significantly increases the attack surface and compromises the integrity of the application by providing opportunities for data theft, malicious code injection, and exposure of sensitive information such as API keys. To ensure your application is protected from these potential threats, it's important to explicitly disable these debugging features in release builds through proper build configurations and deployment profiles.
+The `android:debuggable` flag in an Android application's `AndroidManifest.xml`  and the `get-task-allow` determines whether the application is debuggable. These settings, intended for debugging during development, allow attackers to attach debuggers, inspect application memory, modify code at runtime and easily reverse engineer the application. This significantly increases the attack surface and compromises the integrity of the application by providing opportunities for data theft, malicious code injection, and exposure of sensitive information such as API keys. To ensure your application is protected from these potential threats, it is important to explicitly disable these debugging features in release builds through proper build configurations and deployment profiles.
 
 ## Impact
 
