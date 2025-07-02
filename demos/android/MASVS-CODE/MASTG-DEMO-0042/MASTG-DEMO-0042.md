@@ -8,7 +8,7 @@ test: MASTG-TEST-0026
 
 ### Sample
 
-The code snippet below demonstrates the use of an implicit intent with sensitive data and a custom action, without specifying a target component. 
+The code snippet below demonstrates the use of an implicit intent with sensitive data and a custom action, without specifying a target component.
 
 {{ MastgTest.kt # Android_manifest.xml # MastgTest_reversed.java }}
 
@@ -28,7 +28,6 @@ A component within the vulnerable app originally intended to process sensitive d
 
 1. Install the attacker app on a device using @MASTG-TECH-0004.
 2. On the vulnearble app, click on start to start the test.
-
 
 {{ MastgTestAttacker.kt }}
 {{ AndroidManifestAttacker_app.xml }}

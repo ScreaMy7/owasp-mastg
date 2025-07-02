@@ -16,7 +16,7 @@ The manifest snippet defines an exported activity that contains an `<intent-filt
 
 Let's run our @MASTG-TOOL-0110 rule against the manifest file and code.
 
-{{ ../../../../rules/mastg-android-custom-intent-intercept.yml }}
+{{ ../../../../rules/mastg-android-custom-intent-filter-intercept.yml }}
 
 {{ run.sh }}
 
@@ -32,4 +32,4 @@ This configuration allows any third-party app to register the same action and re
 
 ### Evaluation
 
-The test fails because the exported activity is reachable via a custom implicit action. This exposes internal functionality to untrusted apps and violates Android’s component exposure guidelines. 
+The test fails because the exported activity is reachable via a custom implicit action. This exposes internal functionality to untrusted apps.

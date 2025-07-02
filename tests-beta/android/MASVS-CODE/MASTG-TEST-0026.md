@@ -20,7 +20,7 @@ Android enables communication between its components through intents, which serv
 
 ## Observation
 
-The attacker's application was able to successfully launch the VulnerableActivity using an crafted intent.
+The attacker's application was able to successfully launch the VulnerableActivity using an crafted intent and receive sensitive information.
 
 ## Evaluation
 

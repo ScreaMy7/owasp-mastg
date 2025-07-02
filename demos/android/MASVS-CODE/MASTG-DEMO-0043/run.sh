@@ -1,1 +1,1 @@
-NO_COLOR=true semgrep -c ../../../../rules/mastg-android-implicit-intent-start-activity.yml ../MASTG-DEMO-0042/MastgTest_reversed.java --text -o output.txt
+NO_COLOR=true semgrep -c ../../../../rules/mastg-android-custom-intent-filter-intercept.yml ../MASTG-DEMO-0042/MastgTest_reversed.java --text -o output.txt
