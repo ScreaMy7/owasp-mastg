@@ -8,7 +8,8 @@ weakness: MASWE-0083
 
 ## Overview
 
-Android enables communication between its components through intents, which serve as messaging objects to request actions from other application components. Intents can be explicit, targeting a specific component, or implicit, where the system identifies the suitable component based on the intent's action, data, or category. When you declare an internal component, like an Activity, with `android:exported="true"` and link it to an `<intent-filter>`, it becomes available to external applications via implicit intents. This can introduce security vulnerabilities if the component handles sensitive tasks or accepts input from the intent without proper validation. An attacker might create a malicious app to activate these exported components, potentially altering application behavior or accessing sensitive data.
+Android enables communication between its components through intents, which serve as messaging objects to request actions from other application components. Intents can be explicit, targeting a specific component, or implicit, where the system identifies the suitable component based on the intent’s action, data, or category. When a component such as an Activity is declared with `android:exported="true"` and includes an `<intent-filter>`with a custom action, it becomes accessible to external applications. If an app sends an implicit intent with sensitive data, and that intent can be intercepted by a malicious app, it results in a serious information disclosure vulnerability. Static analysis helps detect both the unsafe intent-sending code and the misconfigured exported component.
+
 
 ## Steps
 
@@ -16,8 +17,12 @@ Android enables communication between its components through intents, which serv
 
 ## Observation
 
-The code uses an implicit intent by setting an action via `Intent.setAction()` and launching it with `startActivity()`. Also, `AndroidManifest.xml` declares an exported activity with an intent filter that matches the custom action.
+The Semgrep output shows:
+
+The AndroidManifest.xml file declares VulnerableActivity with `android:exported="true"` and an intent filter that matches the custom action (org.owasp.mastestapp.PROCESS_SENSITIVE_DATA).
+
+This combination indicates that internal app functionality can be triggered externally, and potentially misused or intercepted by untrusted apps.
 
 ## Evaluation
 
-The test fails due to the exported activity being accessible via an implicit intent.
+The test fails because the AndroidManifest.xml declares an exported activity with an <intent-filter> that uses a custom action. This configuration allows the component to be triggered by any external application using an implicit intent with the matching action.

@@ -1,5 +1,5 @@
 ---
-title: Implicit intent to trigger internal app components
+title: Implicit intent to intecept internal app components
 platform: android
 id: MASTG-TEST-0026
 type: [dynamic]
@@ -12,8 +12,11 @@ Android enables communication between its components through intents, which serv
 
 ## Steps
 
-1. Install the attacker app on a device @MASTG-TECH-0004.
-2. Press the button to trigger the malicious intent.
+1. Install the vulnerable app on the device.
+
+2. Install the attacker app on the device @MASTG-TECH-0004.
+
+3. Launch the vulnerable app to trigger the implicit intent from vulnerable app.
 
 ## Observation
 
