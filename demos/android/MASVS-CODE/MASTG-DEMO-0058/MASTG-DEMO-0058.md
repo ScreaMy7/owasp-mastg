@@ -27,7 +27,7 @@ A component within the vulnerable app originally intended to process sensitive d
 ### Steps
 
 1. Install the attacker app on a device using @MASTG-TECH-0004.
-2. On the vulnearble app, click on start to start the test.
+2. On the vulnerable app, click on start to start the test.
 
 {{ MastgTestAttacker.kt }}
 {{ AndroidManifestAttacker_app.xml }}
