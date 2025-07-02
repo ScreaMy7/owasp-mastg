@@ -8,26 +8,28 @@ test: MASTG-TEST-0027
 
 ### Sample
 
-The code snippet shows that an implicit intent is used to launch an activity using Intent without specifying the target component. This could allow malicious applications to hijack the intent.
+The manifest snippet defines an exported activity that contains an `<intent-filter>` with a custom action. This makes the component accessible to any application on the device that registers the same intent action, potentially enabling a malicious app to intercept such intents.
 
-{{ ../MASTG-DEMO-0042/MastgTest_reversed.java # ../MASTG-DEMO-0042/AndroidManifest_reversed.xml }}
+{{ ../MASTG-DEMO-0042/AndroidManifest_reversed.xml }}
 
 ### Steps
 
 Let's run our @MASTG-TOOL-0110 rule against the manifest file and code.
 
-{{ ../../../../rules/mastg-android-implicit-intent-start-activity.yml }}
-
-{{ ../../../../rules/mastg-android-exported-activity.yml }}
+{{ ../../../../rules/mastg-android-custom-intent-intercept.yml }}
 
 {{ run.sh }}
 
 ### Observation
 
-The first semgrep output shows that the implicit Intent usage in the code (e.g., `Intent.setAction(...)`, then starts activity with `startActivity`.
+Semgrep identifies that the `org.owasp.mastestapp.VulnerableActivity` component is both:
 
-The second semgrep output shows that `org.owasp.mastestapp.VulnerableActivity` is an exported activity declared in the `AndroidManifest.xml`. It contains an `<intent-filter>` block that registers a custom action.
+- Marked as `android:exported="true"`
+
+- Declares an `<intent-filter>` with a custom action `org.owasp.mastestapp.PROCESS_SENSITIVE_DATA`.
+
+This configuration allows any third-party app to register the same action and receive the implicit intent, enabling potential hijacking of sensitive data.
 
 ### Evaluation
 
-The test fails because of presence of both an implicit intent usage in the code and an exported activity with a matching action confirms a vulnerability in the component that can be exploited by attacker application.
+The test fails because the exported activity is reachable via a custom implicit action. This exposes internal functionality to untrusted apps and violates Android’s component exposure guidelines. 

