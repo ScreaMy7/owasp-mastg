@@ -1,7 +1,7 @@
 ---
 platform: android
 title: Implicit Intent Hijacking with same custom intent filter
-id: MASTG-DEMO-0042
+id: MASTG-DEMO-0058
 code: [kotlin]
 test: MASTG-TEST-0026
 ---

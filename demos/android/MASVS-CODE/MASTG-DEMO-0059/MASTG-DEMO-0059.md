@@ -1,7 +1,7 @@
 ---
 platform: android
-title: Implicit Intent Hijacking
-id: MASTG-DEMO-0043
+title: Implicit intent to trigger internal app components
+id: MASTG-DEMO-0059
 code: [kotlin]
 test: MASTG-TEST-0027
 ---
