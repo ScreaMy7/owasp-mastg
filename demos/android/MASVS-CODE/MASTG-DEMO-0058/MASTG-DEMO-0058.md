@@ -3,18 +3,18 @@ platform: android
 title: Implicit Intent Hijacking with same custom intent filter
 id: MASTG-DEMO-0058
 code: [kotlin]
-test: MASTG-TEST-0026
+test: MASTG-TEST-0286
 ---
 
 ### Sample
 
 The code snippet below demonstrates the use of an implicit intent with sensitive data and a custom action, without specifying a target component.
 
-{{ MastgTest.kt # Android_manifest.xml # MastgTest_reversed.java }}
+{{ MastgTest.kt # MastgTest_reversed.java }}
 
 ### MastgTestAttacker.kt
 
-The attacker app defines an exported activity with a matching `<intent-filter>` that registers the same custom action, allowing it to intercept the implicit intent broadcast by the victim app.
+The attacker app has an exported activity that includes a corresponding `<intent-filter>` which registers the identical custom action, enabling it to capture the implicit intent sent out by the victim app.
 
 {{ MastgTestAttacker.kt }}
 

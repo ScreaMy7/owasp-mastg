@@ -1,8 +1,9 @@
 ---
 title: Implicit intent to intecept internal app components
 platform: android
-id: MASTG-TEST-0026
+id: MASTG-TEST-0286
 type: [dynamic]
+profiles: [L1, L2]
 weakness: MASWE-0083
 ---
 
