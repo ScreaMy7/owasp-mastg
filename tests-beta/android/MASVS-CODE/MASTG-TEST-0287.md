@@ -12,7 +12,7 @@ Android enables communication between its components through intents, which serv
 
 ## Steps
 
-1. Run a static analysis tool such as @MASTG-TOOL-0110 on the code and `AndroidManifest.xml` file.
+1. Run a static analysis tool such as @MASTG-TOOL-0110 on the `AndroidManifest.xml` file.
 
 ## Observation
 
