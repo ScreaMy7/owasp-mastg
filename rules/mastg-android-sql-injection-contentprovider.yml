@@ -1,0 +1,14 @@
+rules:
+  - id: mastg-android-sqli-contentprovider
+    severity: WARNING
+    languages:
+      - java
+    metadata:
+      summary: This rule inspects the possible SQL injection in android content providers.
+    message: "Possible SQL Injection: Unvalidated user input from `Uri.getPathSegments()` used in `SQLiteQueryBuilder.appendWhere()"
+    patterns:
+      - pattern: |
+          $QB.appendWhere("..." + $VAR);
+      - pattern-inside: |
+          $VAR = $URI.getPathSegments().get(...);
+          ...
