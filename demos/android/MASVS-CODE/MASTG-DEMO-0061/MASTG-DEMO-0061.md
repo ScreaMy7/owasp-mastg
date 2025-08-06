@@ -16,7 +16,7 @@ The following code implements a vulnerable `ContentProvider` that appends user-c
 
 ### Steps
 
-Let’s run our @MASTG-TOOL-0110 rule against the sample code.
+Let's run our @MASTG-TOOL-0110 rule against the sample code.
 
 {{ ../../../../rules/mastg-android-sql-injection-contentprovider.yml }}
 
