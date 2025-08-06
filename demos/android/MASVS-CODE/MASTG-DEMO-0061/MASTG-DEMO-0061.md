@@ -1,6 +1,6 @@
 ---
 platform: android
-title: Dangerous Permissions in the AndroidManifest with semgrep
+title: Injection flaws in android Content providers
 id: MASTG-DEMO-0061
 code: [kotlin]
 test: MASTG-TEST-0288

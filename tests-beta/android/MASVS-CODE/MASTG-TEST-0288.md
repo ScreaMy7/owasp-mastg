@@ -20,14 +20,16 @@ To identify and test for SQL injection vulnerabilities in `ContentProvider`s:
 
 The following vulnerable pattern was found in the app:
 
-```
+```java
 String id = uri.getPathSegments().get(1);
 qb.appendWhere("id=" + id);
 ```
+
 This code uses untrusted input from the URI path directly in a SQL query, enabling potential SQL injection.
 
 ## Evaluation
 
 The test fails if:
+
 - Untrusted user input (e.g., from `getPathSegments()`) is directly concatenated into SQL statements.
 - The app uses `appendWhere()` or builds queries unsafely without sanitization or parameterization.
