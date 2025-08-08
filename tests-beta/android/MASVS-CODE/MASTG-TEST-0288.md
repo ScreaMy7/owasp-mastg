@@ -2,7 +2,7 @@
 title: SQL Injection in ContentProvider
 platform: android
 id: MASTG-TEST-0288
-weakness: 
+weakness: MASWE-0084
 profiles: [L1, L2]
 ---
 
