@@ -1,31 +1,27 @@
 ---
-platform: android
 title: SQL Injection in ContentProvider
+platform: android
 id: MASTG-TEST-0288
-weakness: [MASVS-CODE-4,MSTG-PLATFORM-2]
+weakness: 
 profiles: [L1, L2]
 ---
 
 ## Overview
 
-Android apps can expose structured data through `ContentProvider` components. If these providers build SQL queries using untrusted input from URIs without proper validation or parameterization, they become vulnerable to SQL injection attacks.
+Android applications can share structured data via `ContentProvider` components. However, if these providers create SQL queries using untrusted input from URIs without adequate validation or parameterization, they risk becoming susceptible to SQL injection attacks.
 
 ## Steps
 
-To identify and test for SQL injection vulnerabilities in `ContentProvider`s:
-
-1. Run @MASTG-TOOL-0110 rule against the code file to detect unvalidated use of `Uri.getPathSegments()` inside `appendWhere()`.
+1. Run @MASTG-TOOL-0110 rule against the code file to detect SQL injection caused by unvalidated use of `Uri.getPathSegments()` inside `appendWhere()`.
 
 ## Observation
 
-The following vulnerable pattern was found in the app:
+This code uses untrusted input from the URI path directly in a SQL query, enabling potential SQL injection.
 
 ```java
 String id = uri.getPathSegments().get(1);
 qb.appendWhere("id=" + id);
 ```
-
-This code uses untrusted input from the URI path directly in a SQL query, enabling potential SQL injection.
 
 ## Evaluation
 
