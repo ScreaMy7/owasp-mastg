@@ -5,11 +5,11 @@ platform: android
 
 This technique groups common tasks for assessing deep links on Android: detecting usage, validating website association, monitoring its resolution, and invoking links.
 
-## Check for Deep Link Usage
+## Verify Usage of Deep Links
 
-Identify deep link usage via manifest inspection and code review.
+Deep link entry points can be discovered by examining intent filters in the `AndroidManifest.xml` and reviewing the code to understand how incoming deep link data is processed and validated.
 
-### Manifest inspection
+### Inspection of the AndroidManifest File
 
 Extract and review intent-filters that declare VIEW/BROWSABLE handlers. Use @MASTG-TOOL-0124, then select `intent-filter` with `android.intent.action.VIEW"` and `android.intent.category.BROWSABLE`.
 
@@ -17,13 +17,13 @@ Extract and review intent-filters that declare VIEW/BROWSABLE handlers. Use @MAS
 aapt2 dump xmltree app.apk AndroidManifest.xml 
 ```
 
-### Using Dumpsys:
+### Using Dumpsys
 
-Use  adb to run the following command that will show all schemes:
+Use adb to run the following command that will show all schemes:
 
 `adb shell dumpsys package com.example.package`
 
-### Using Android "App Link Verification" Tester:
+### Using the Android App Link Verification Tester
 
 Use the Android @MASTG-TOOL-014X Tester to list all deep links (list-all) or only app links (list-applinks):
 
@@ -35,11 +35,11 @@ org.owasp.mastestapp.MainActivity
 vulnerable-app://deeplink
 ```
 
-## Check for Correct Website Association
+## Verify Domain Association Setup for App Links
 
-Android App Links must be verified against a website’s Digital Asset Links to ensure only the legitimate app handles links for that domain.
+Android App Links must be verified against a website's Digital Asset Links to ensure only the legitimate app handles links for that domain.
 
-### Verify App Links state 
+### Verify App Links state
 
 ```bash
 # Trigger verification
@@ -57,7 +57,7 @@ Preferential handling and verification status per host should be listed. Unverif
 
 ### Validate assetlinks.json
 
-Fetch the site statements and verify package name and sha256_cert_fingerprints match the app’s signing cert:
+Fetch the site statements and verify package name and sha256_cert_fingerprints match the app's signing cert
 
 ```bash
 curl -s https://example.com/.well-known/assetlinks.json | jq
@@ -74,7 +74,7 @@ Check for invalid Digital Asset Links files served via HTTPS. For example:
 
 When using deep links, monitor how the system resolves and dispatches the Intent.
 
-### Logcat
+### Using Logcat
 
 Use @MASTG-TOOL-0004 to tail logs or @MASTG-TOOL-0112 for app-scoped output:
 

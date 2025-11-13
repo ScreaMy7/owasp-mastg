@@ -19,7 +19,7 @@ This demo references a manifest that declares a custom scheme:
 
 ### Steps
 
-Let's run our @MASTG-TOOL-0110 rule against the reversed java code.
+Let's run our @MASTG-TOOL-0110 rule against the reversed AndroidManifest file.
 
 {{ ../../../../rules/mastg-android-custom-deeplink-scheme.yml }}
 
