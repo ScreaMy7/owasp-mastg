@@ -64,6 +64,7 @@ curl -s https://example.com/.well-known/assetlinks.json | jq
 ```
 
 Check for invalid Digital Asset Links files served via HTTPS. For example:
+
 - The file contains invalid JSON.
 - The file doesn't include the target app's package.
 - If an intent filter lists multiple hosts with different subdomains, there must be a valid Digital Asset Links file on each domain.
@@ -115,7 +116,8 @@ adb shell am start -W \
   -c android.intent.category.BROWSABLE \
   -d "https://example.com/deeplink/path?foo=bar"
 ```
-```
+
+```bash
 adb shell am start -W \
   -a android.intent.action.VIEW \
   -c android.intent.category.BROWSABLE \
@@ -124,10 +126,10 @@ adb shell am start -W \
   --ei "user_id" 12345 \
   --ez "is_promo" true
 ```
+
 Adding extras:
 
 - Add extras with --es key value, --ei, --ez, etc.
-
 
 ### Using drozer
 

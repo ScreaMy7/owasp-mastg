@@ -27,10 +27,9 @@ Let's run our @MASTG-TOOL-0110 rule against the reversed AndroidManifest file.
 
 ### Observation
 
-The rule has identified one location in the manifest file where the app has set the custom URL schemes. 
+The rule has identified one location in the manifest file where the app has set the custom URL schemes.
 
 {{ output.txt }}
-
 
 ### Evaluation
 
