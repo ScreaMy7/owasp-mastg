@@ -4,7 +4,6 @@ title: Dynamic Detection of Arbitrary Code Execution Using Implicit Intent Hijac
 id: MASTG-DEMO-XXXC
 code: [kotlin]
 test: MASTG-TEST-XXXC
-profiles: [L1, L2]
 ---
 
 ## Sample
@@ -36,7 +35,7 @@ The attacker app registers a high-priority intent filter for `android.intent.act
 
 ## Observation
 
-The attacker app intercepts the `GET_CONTENT` intent and returns a `content://` URI. The vulnerable app queries this URI, receiving a filename with a path-traversal component (`../lib-main/lib.so`). It then opens the URI via `ContentProvider.openFile()`, which serves the attacker's malicious `fakelib.so`. The victim app copies this file into its library directory and loads it via `System.load()`, executing the attacker's code within the victim app's process and with its full permissions.
+The output contains an interception of the `GET_CONTENT` intent and returns a `content://` URI controlled by the attacker. The vulnerable app queries this URI, receiving a filename with a path-traversal component (`../lib-main/lib.so`). It then opens the URI via `ContentProvider.openFile()`, which serves the attacker's malicious `fakelib.so`. The victim app copies this file into its library directory and loads it via `System.load()`, executing the attacker's code within the victim app's process and with its full permissions.
 
 The app loads the attacker-supplied library `content://com.attacker.evil/malicious_lib`
 

@@ -4,7 +4,6 @@ title: Dynamic Detection of Implicit Intent Hijacking
 id: MASTG-DEMO-XXXA
 code: [kotlin]
 test: MASTG-TEST-XXXA
-
 ---
 
 ## Sample
@@ -29,13 +28,13 @@ The attacker app has an exported activity that includes a corresponding `<intent
 
 ## Steps
 
-1. Install the vulnerable app and attacker app on the device using @MASTG-TECH-0005.
+1. Install the vulnerable app and attacker app on the device.
 2. On the vulnerable app, click on start to start the test.
 3. Android system will ask you which app should be used to handle the intent. Choose "IntentInterceptor" in app chooser.
 
 ## Observation
 
-The output contains evidence that the attacker app successfully intercepted the intent containing sensitive extras such as tokens, API keys, and credentials to display on the attacker app. This confirms that any app declaring a matching <intent-filter> can receive these values without restriction.
+The output contains evidence that the attacker app successfully intercepted the intent containing sensitive extras such as tokens, API keys, and credentials to display on the attacker app. This confirms that any app declaring a matching `<intent-filter>` can receive these values without restriction.
 
 ## Evaluation
 

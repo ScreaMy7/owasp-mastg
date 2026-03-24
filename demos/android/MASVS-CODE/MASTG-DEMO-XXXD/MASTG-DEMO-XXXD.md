@@ -3,8 +3,8 @@ platform: android
 title: Arbitrary File Read via Implicit Intent Hijacking
 id: MASTG-DEMO-XXXD
 code: [kotlin]
+tools: [MASTG-TOOL-0004]
 test: MASTG-TEST-XXXD
-profiles: [L1, L2]
 ---
 
 ## Sample
@@ -27,10 +27,14 @@ The attacker app registers an exported activity with a high-priority intent-filt
 
 ## Observation
 
-The attacker app intercepts the implicit intent and returns a `file://` URI pointing to the victim's internal SharedPreferences file containing sensitive tokens and credentials. The victim app copies this file to its external cache directory (`/sdcard/Android/data/org.owasp.mastestapp/cache/tmp`), making it world-readable.
+The output contains the internal SharedPreferences file containing sensitive tokens and credentials. The victim app copies this file to its external cache directory (`/sdcard/Android/data/org.owasp.mastestapp/cache/tmp`), making it world-readable.
 
 {{ output.txt }}
 
 ## Evaluation
 
-The test case fails because the app uses an implicit intent without specifying a target component, and copies the returned URI content to a world-readable external cache directory without validating the URI origin or path. An attacker app with a matching intent-filter can return a `file://` URI pointing to any file within the victim's internal storage, achieving arbitrary file read.
+The test fails because:
+
+- The vulnerable app sends an implicit intent with action `REQUEST_FILE` without specifying a target component, allowing the attacker app to intercept it by registering a matching `<intent-filter>`.
+- The attacker app returned a `file://` URI pointing to the victim's internal SharedPreferences (`session.xml`), which contained sensitive data including `auth_token`, `api_key`, and `session_id`.
+- The victim app copied the content referenced by the returned URI to the external cache directory without validating the URI scheme, origin, or path, making the stolen file world-readable.
