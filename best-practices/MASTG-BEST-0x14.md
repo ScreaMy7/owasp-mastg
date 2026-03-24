@@ -48,6 +48,6 @@ Avoid declaring internal components with `android:exported="true"` and a custom 
 <activity android:name=".InternalActivity" android:exported="false" />
 ```
 
-**Note:** Setting `android:exported="false"` doesn't prevent other components within the same app from starting the activity via an explicit intent. It only prevents external apps from doing so. If `android:exported="true"` is required (for example, to handle system actions), restrict access using [permissions](https://developer.android.com/guide/topics/permissions/overview) with `android:permission`.
+!!! note
 
-Refer to the official Android documentation on [Intent security](https://developer.android.com/privacy-and-security/risks/intent-redirection) and [Intents and Intent Filters](https://developer.android.com/guide/components/intents-filters) for further guidance.
+     Setting `android:exported="false"` doesn't prevent other components within the same app from starting the activity via an explicit intent. It only prevents external apps from doing so. If `android:exported="true"` is required (for example, to handle system actions), restrict access using [permissions](https://developer.android.com/guide/topics/permissions/overview) with `android:permission`.

@@ -52,6 +52,6 @@ val output = File(activity.externalCacheDir, fileName)
 val output = File(activity.filesDir, fileName)
 ```
 
-**Note:** Validating the URI and filename reduces the attack surface but doesn't eliminate it entirely if the content itself is attacker-controlled. Never execute or dynamically load files (via `System.load()`, `DexClassLoader`, etc.) whose content originates from an untrusted source, regardless of where they are stored.
+!!! note
 
-Refer to the official Android documentation on [Content provider security](https://developer.android.com/guide/topics/providers/content-provider-basics#security) and [Intent redirection](https://developer.android.com/privacy-and-security/risks/intent-redirection) for further guidance.
+     Validating the URI and filename reduces the attack surface but doesn't eliminate it entirely if the content itself is attacker-controlled. Never execute or dynamically load files (via `System.load()`, `DexClassLoader`, etc.) whose content originates from an untrusted source, regardless of where they are stored.
