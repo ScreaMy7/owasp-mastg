@@ -18,13 +18,13 @@ The vulnerable app uses `startActivityForResult` with an implicit intent to requ
 
 The `LibraryLoaderActivity` handles the returned URI by copying the content to the app's native library directory and loading it via `System.load()`. Since the URI is not validated, an attacker can substitute a malicious `.so` file.
 
-{{ LibraryLoaderActivity.kt # AndroidManifest.xml }}
+{{ LibraryLoaderActivity.kt }}
 
 ## Attacker App
 
 The attacker app registers a high-priority intent filter for `android.intent.action.GET_CONTENT`. When selected, it returns a `content://` URI that resolves to the attacker's `ContentProvider`. The `ContentProvider` uses `query()` to set a path-traversal filename (e.g., `../lib-main/lib.so`) and `openFile()` to serve a malicious native library.
 
-{{ attacker/EvilContentActivity.kt # attacker/EvilContentProvider.kt # attacker/AndroidManifest.xml }}
+{{ attacker/EvilContentActivity.kt # attacker/EvilContentProvider.kt }}
 
 ## Steps
 
