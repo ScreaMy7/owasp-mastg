@@ -21,28 +21,15 @@ The attacker app registers an exported activity with a high-priority intent-filt
 
 ## Steps
 
-1. Install the vulnerable app on the device using @MASTG-TECH-0004.
-2. Install the attacker app on the device using @MASTG-TECH-0004.
-3. Launch the vulnerable app and click "Start" to trigger the `REQUEST_FILE` implicit intent.
-4. When the resolver dialog appears showing both the legitimate handler and the attacker app ("FileProvider"), select the attacker app.
+1. Install the vulnerable and attacker app on the device.
+2. Launch the vulnerable app and click "Start" to trigger the `REQUEST_FILE` implicit intent.
+3. When the resolver dialog appears showing both the legitimate handler and the attacker app ("FileProvider"), select the attacker app.
 
 ## Observation
 
 The attacker app intercepts the implicit intent and returns a `file://` URI pointing to the victim's internal SharedPreferences file containing sensitive tokens and credentials. The victim app copies this file to its external cache directory (`/sdcard/Android/data/org.owasp.mastestapp/cache/tmp`), making it world-readable.
 
-The output file shows:
-
-```xml
-<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
-<map>
-    <string name="refresh_token">rt_8f14e45f-ceea-367f-a27f-abc123def456</string>
-    <string name="user_email">admin@example.com</string>
-    <string name="api_key">sk-live-1234567890abcdef</string>
-    <string name="session_id">sess_a1b2c3d4e5f6</string>
-    <string name="auth_token">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.secret</string>
-    <string name="credit_card_last4">4242</string>
-</map>
-```
+{{ output.txt }}
 
 ## Evaluation
 

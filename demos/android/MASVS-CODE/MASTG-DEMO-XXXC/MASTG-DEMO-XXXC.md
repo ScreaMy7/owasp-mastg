@@ -9,7 +9,7 @@ profiles: [L1, L2]
 
 ## Sample
 
-This demo consists of two applications. A vulnerable app that uses an implicit intent with `android.intent.action.GET_CONTENT` and loads content from the returned URI, and an attacker app that hijacks this intent to achieve arbitrary code execution by supplying a malicious native library via a `ContentProvider`.
+The demo consists of a vulnerable application that relies on an implicit intent (`android.intent.action.GET_CONTENT`) to process content from a returned URI, and a second application that hijacks this intent to enable arbitrary code execution using a malicious native library served through a `ContentProvider`.
 
 ## Vulnerable App
 
@@ -30,10 +30,9 @@ The attacker app registers a high-priority intent filter for `android.intent.act
 ## Steps
 
 1. Prepare a malicious shared library (`fakelib.so`) and place it in the attacker app's data directory.
-2. Install the attacker app on a device using @MASTG-TECH-0004.
-3. Install the vulnerable app on a device using @MASTG-TECH-0004.
-4. On the vulnerable app, click on start to trigger the file selection intent.
-5. If a chooser dialog appears, select the attacker app. If the victim app auto-selects via `queryIntentActivities()`, the attacker app is chosen automatically due to its high-priority intent filter.
+2. Install the attacker and vulnerable app on a device.
+3. On the vulnerable app, click on start to trigger the file selection intent.
+4. If a chooser dialog appears, select the attacker app. If the victim app auto-selects via `queryIntentActivities()`, the attacker app is chosen automatically due to its high-priority intent filter.
 
 ## Observation
 
